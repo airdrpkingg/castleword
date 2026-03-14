@@ -1,12 +1,10 @@
-// api/leaderboard.js
-// Returns the global leaderboard for today's word.
-//
-// GET /api/leaderboard          → top 50 by points (default)
-// GET /api/leaderboard?sort=tries → sorted by fewest tries
-//
-// Requires Vercel KV (set KV_REST_API_URL + KV_REST_API_TOKEN in env vars)
+// api/leaderboard.js — updated for Upstash Redis
+import { Redis } from '@upstash/redis';
 
-import { kv } from '@vercel/kv';
+const kv = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -14,22 +12,19 @@ export default async function handler(req, res) {
   const dayNum = Math.floor(Date.now() / 86400000);
   const sort = req.query.sort || 'points';
 
-  // Get top 50 fids by score (descending)
   const topFids = await kv.zrange(`leaderboard:${dayNum}`, 0, 49, { rev: true });
 
   if (!topFids.length) return res.status(200).json({ players: [], day: dayNum });
 
-  // Fetch player data
   const rawPlayers = await kv.hmget(`players:${dayNum}`, ...topFids.map(String));
 
   let players = rawPlayers
     .filter(Boolean)
     .map(raw => {
-      try { return JSON.parse(raw); } catch { return null; }
+      try { return typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { return null; }
     })
     .filter(Boolean);
 
-  // Sort
   if (sort === 'tries') {
     players.sort((a, b) => {
       if (!a.tries && !b.tries) return 0;
@@ -41,9 +36,5 @@ export default async function handler(req, res) {
     players.sort((a, b) => (b.points || 0) - (a.points || 0));
   }
 
-  return res.status(200).json({
-    players,
-    day: dayNum,
-    total: players.length,
-  });
+  return res.status(200).json({ players, day: dayNum, total: players.length });
 }
