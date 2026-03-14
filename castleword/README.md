@@ -20,7 +20,7 @@ castleword/
 
 ---
 
-## Step 1 — Add images
+## Step 1 — Add images 
 
 Create 3 images and put them in /public:
 - **icon.png** — 512×512, white background, 🏰 castle emoji or custom logo
