@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "headers": [
+  "redirects": [
     {
-      "source": "/.well-known/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Content-Type", "value": "application/json" }
-      ]
-    },
+      "source": "/.well-known/farcaster.json",
+      "destination": "https://api.farcaster.xyz/miniapps/hosted-manifest/019ced30-409e-23fa-e53b-3ba5aede4695",
+      "permanent": false
+    }
+  ],
+  "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
@@ -18,10 +18,6 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/.well-known/farcaster.json",
-      "destination": "/api/farcaster-manifest"
-    },
     { "source": "/", "destination": "/index.html" }
   ],
   "functions": {
