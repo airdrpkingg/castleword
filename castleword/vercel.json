@@ -1,9 +1,20 @@
 {
   "version": 2,
-  "rewrites": [
+  "redirects": [
     {
       "source": "/.well-known/farcaster.json",
-      "destination": "/api/farcaster-manifest"
+      "destination": "https://api.farcaster.xyz/miniapps/hosted-manifest/019ced30-409e-23fa-e53b-3ba5aede4695",
+      "permanent": false
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
+      ]
     }
   ]
 }
