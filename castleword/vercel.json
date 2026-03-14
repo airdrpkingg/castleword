@@ -1,18 +1,25 @@
 {
   "version": 2,
+  "rewrites": [
+    {
+      "source": "/.well-known/farcaster.json",
+      "destination": "/api/farcaster-manifest"
+    }
+  ],
   "headers": [
     {
-      "source": "/.well-known/(.*)",
+      "source": "/api/(.*)",
       "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/json"
-        }
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/farcaster-manifest.js": { "maxDuration": 10 },
+    "api/score.js":              { "maxDuration": 10 },
+    "api/leaderboard.js":        { "maxDuration": 10 },
+    "api/webhook.js":            { "maxDuration": 10 }
+  }
 }
