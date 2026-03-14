@@ -9,13 +9,13 @@
 <!-- Open Graph -->
 <meta property="og:title" content="CastleWord">
 <meta property="og:description" content="Daily crypto Wordle for the Farcaster community.">
-<meta property="og:image" content="https://castleword.xyz/og.png">
-<meta property="og:url" content="https://castleword.xyz">
+<meta property="og:image" content="https://castlewordairdrpking.vercel.app/og.png">
+<meta property="og:url" content="https://castlewordairdrpking.vercel.app">
 
 <!-- Farcaster miniapp embed meta tag (required for feed sharing) -->
-<meta name="fc:miniapp" content='{"version":"1","imageUrl":"https://castleword.xyz/og.png","button":{"title":"🏰 Play today","action":{"type":"launch_miniapp","name":"CastleWord","url":"https://castleword.xyz","splashImageUrl":"https://castleword.xyz/splash.png","splashBackgroundColor":"#f2f2f7"}}}'>
+<meta name="fc:miniapp" content='{"version":"1","imageUrl":"https://castlewordairdrpking.vercel.app/og.png","button":{"title":"🏰 Play today","action":{"type":"launch_miniapp","name":"CastleWord","url":"https://castlewordairdrpking.vercel.app","splashImageUrl":"https://castlewordairdrpking.vercel.app/splash.png","splashBackgroundColor":"#f2f2f7"}}}'>
 <!-- Backward compat -->
-<meta name="fc:frame" content='{"version":"1","imageUrl":"https://castleword.xyz/og.png","button":{"title":"🏰 Play today","action":{"type":"launch_frame","name":"CastleWord","url":"https://castleword.xyz","splashImageUrl":"https://castleword.xyz/splash.png","splashBackgroundColor":"#f2f2f7"}}}'>
+<meta name="fc:frame" content='{"version":"1","imageUrl":"https://castlewordairdrpking.vercel.app/og.png","button":{"title":"🏰 Play today","action":{"type":"launch_frame","name":"CastleWord","url":"https://castlewordairdrpking.vercel.app","splashImageUrl":"https://castlewordairdrpking.vercel.app/splash.png","splashBackgroundColor":"#f2f2f7"}}}'>
 
 <style>
 :root {
@@ -558,7 +558,7 @@ document.getElementById('btn-cast').addEventListener('click',async()=>{
   const won=document.getElementById('e-tries').textContent!=='—';
   const tries=document.getElementById('e-tries').textContent;
   const pts=document.getElementById('e-pts').textContent;
-  const text=`🏰 CastleWord · Day #${dayNum%10000}\n${won?`✅ ${tries}/6 · ${pts}pts`:'❌ Did not finish today'}\n\n${emojiGrid()}\n\nCan you beat me? 👇\nhttps://castleword.xyz`;
+  const text=`🏰 CastleWord · Day #${dayNum%10000}\n${won?`✅ ${tries}/6 · ${pts}pts`:'❌ Did not finish today'}\n\n${emojiGrid()}\n\nCan you beat me? 👇\nhttps://castlewordairdrpking.vercel.app`;
   try{await sdk.actions.composeCast({text});}
   catch(e){showToast('Open in Warpcast to share');}
 });
