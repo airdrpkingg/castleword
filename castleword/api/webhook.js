@@ -1,53 +1,41 @@
-// api/webhook.js — updated for Upstash Redis
-import { Redis } from '@upstash/redis';
+async function kvHset(key, field, value) {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  await fetch(url, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify(["HSET", key, field, value])
+  });
+}
+async function kvHdel(key, field) {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  await fetch(url, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify(["HDEL", key, field])
+  });
+}
 
-const kv = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
+module.exports = async function handler(req, res) {
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST") return res.status(405).end();
 
-export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).end();
+  const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+  const { event, notificationDetails } = body;
+  const userFid = body.fid || (body.data && body.data.fid);
 
-  let body;
-  try {
-    body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-  } catch {
-    return res.status(400).json({ error: 'Invalid JSON' });
-  }
-
-  const { event, notificationDetails, fid } = body;
-  const userFid = fid || body.data?.fid;
-
-  switch (event) {
-    case 'miniapp_added':
-      if (notificationDetails?.token && notificationDetails?.url && userFid) {
-        await kv.hset('notification_tokens', {
-          [String(userFid)]: JSON.stringify({
-            token: notificationDetails.token,
-            url: notificationDetails.url,
-            addedAt: Date.now(),
-          }),
-        });
-      }
-      break;
-    case 'miniapp_removed':
-    case 'notifications_disabled':
-      if (userFid) await kv.hdel('notification_tokens', String(userFid));
-      break;
-    case 'notifications_enabled':
-      if (notificationDetails?.token && userFid) {
-        await kv.hset('notification_tokens', {
-          [String(userFid)]: JSON.stringify({
-            token: notificationDetails.token,
-            url: notificationDetails.url,
-            enabledAt: Date.now(),
-          }),
-        });
-      }
-      break;
+  if (event === "miniapp_added" || event === "notifications_enabled") {
+    if (notificationDetails && notificationDetails.token && userFid) {
+      await kvHset("notification_tokens", String(userFid), JSON.stringify({
+        token: notificationDetails.token,
+        url: notificationDetails.url,
+        addedAt: Date.now()
+      }));
+    }
+  } else if (event === "miniapp_removed" || event === "notifications_disabled") {
+    if (userFid) await kvHdel("notification_tokens", String(userFid));
   }
 
   return res.status(200).json({ ok: true });
-}
+};
