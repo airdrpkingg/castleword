@@ -1,18 +1,17 @@
 {
   "version": 2,
-  "rewrites": [
-    {
-      "source": "/.well-known/farcaster.json",
-      "destination": "/api/farcaster-manifest"
-    }
-  ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/.well-known/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
       ]
     }
   ]
